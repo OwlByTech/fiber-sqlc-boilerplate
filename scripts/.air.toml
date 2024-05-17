@@ -1,0 +1,17 @@
+root = "."
+tmp_dir = ".air"
+
+[build]
+bin = "./.air/server --mode dev"
+cmd = "go build -o ./.air/server ./cmd/server/main.go"
+delay = 1000
+exclude_dir = [".air"]
+include_ext = ["go", "mod", "sum", ".air.toml"]
+exclude_file = []
+exclude_regex = []
+exclude_unchanged = true
+follow_symlink = false
+send_interrupt = true
+kill_delay = 2000
+stop_on_error = true
+poll = true

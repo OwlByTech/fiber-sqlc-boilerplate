@@ -7,7 +7,7 @@ To start the project in development mode, you must copy the `.env.example` to `.
 and then you should run the following command:
 
 ```bash
-docker compose -f compose-dev.yaml
+docker compose -f compose-dev.yml
 ```
 
 Then you must run the migration and seeder inside the app container.

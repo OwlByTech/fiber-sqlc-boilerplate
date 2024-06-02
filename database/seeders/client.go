@@ -9,9 +9,9 @@ import (
 	sq "optitech/internal/sqlc"
 )
 
-// TODO: Add a interface for all seeders
+type ClientSeeder struct {}
 
-func ClientUp() error {
+func (cs ClientSeeder) Up() error {
 	ctx := context.Background()
 	curTime := time.Now()
 	client := sq.CreateClientParams{
@@ -31,7 +31,7 @@ func ClientUp() error {
 	return nil
 }
 
-func ClientDown() error {
+func (cs ClientSeeder) Down() error {
 	ctx := context.Background()
 	r, err := repository.Queries.DeleteAllClients(ctx)
 	if err != nil {

@@ -16,14 +16,20 @@ func Seeder(arg string) error {
 
 	repository.Queries = *sq.New(db)
 
+	// NOTE: here we provide all the seeders with the same
+	// structure like client
+	seeders := []seeders.Seeder{
+		&seeders.ClientSeeder{},
+	}
+
 	switch arg {
 	case "up":
-		if err := seederUp(); err != nil {
+		if err := seederUp(seeders); err != nil {
 			return err
 		}
 
 	case "down":
-		if err := seederDown(); err != nil {
+		if err := seederDown(seeders); err != nil {
 			return err
 		}
 
@@ -34,10 +40,24 @@ func Seeder(arg string) error {
 	return nil
 }
 
-func seederUp() error {
-	return seeders.ClientUp()
+func seederUp(seeders []seeders.Seeder) error {
+	for _, seeder := range seeders {
+		if err := seeder.Up(); err != nil {
+			// TODO: add rollback
+			return err
+		}
+	}
+
+	return nil
 }
 
-func seederDown() error {
-	return seeders.ClientDown()
+func seederDown(seeders []seeders.Seeder) error {
+	for _, seeder := range seeders {
+		if err := seeder.Down(); err != nil {
+			// TODO: add rollback
+			return err
+		}
+	}
+
+	return nil
 }

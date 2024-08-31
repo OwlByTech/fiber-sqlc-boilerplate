@@ -14,7 +14,7 @@ func Seeder(arg string) error {
 		log.Fatalf("%v", err)
 	}
 
-	repository.Queries = *sq.New(db)
+	repository.Queries = sq.New(db)
 
 	// NOTE: here we provide all the seeders with the same
 	// structure like client

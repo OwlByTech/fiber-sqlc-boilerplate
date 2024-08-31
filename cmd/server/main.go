@@ -22,7 +22,7 @@ func main() {
 		log.Fatalf("You must provide positive port number: %v", err)
 	}
 
-	repository.Queries = *sq.New(db)
+	repository.Queries = sq.New(db)
 
 	s := &router.Server{
 		Port: uint16(port),

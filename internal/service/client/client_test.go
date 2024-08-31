@@ -17,18 +17,19 @@ func TestClientServices(t *testing.T) {
 	assert.NotNil(t, db)
 	assert.Nil(t, err)
 
-	repository.Queries = *sq.New(db)
-
-	var client *sq.Client
+	repository.Queries = sq.New(db)
+	repo := repository.NewRepositoryClient(repository.Queries)
+	svc := NewServiceClient(repo)
+	var client *dto.GetClientRes
 
 	t.Run("Create a client", func(t *testing.T) {
-		req := dto.CreateClientReq{
+		req := &dto.CreateClientReq{
 			GivenName: "test",
 			Surname:   "test",
 			Email:     "test@gmail.com",
 			Password:  "password",
 		}
-		client, err = CreateClientService(req)
+		client, err = svc.Create(req)
 		assert.NotNil(t, client)
 		assert.Nil(t, err)
 	})
@@ -38,16 +39,16 @@ func TestClientServices(t *testing.T) {
 	t.Run("Get the client created previously", func(t *testing.T) {
 		assert.NotNil(t, client)
 
-		req := dto.GetClientReq{
-			Id: client.ClientID,
+		req := &dto.GetClientReq{
+			Id: client.Id,
 		}
 
-		getClient, err = GetClientService(req)
+		getClient, err = svc.Get(req)
 		assert.NotNil(t, getClient)
 		assert.Nil(t, err)
 	})
 
 	assert.NotNil(t, getClient)
 	assert.NotNil(t, client)
-	assert.Equal(t, getClient.Id, client.ClientID)
+	assert.Equal(t, getClient.Id, client.Id)
 }

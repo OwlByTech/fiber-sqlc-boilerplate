@@ -3,12 +3,22 @@ package handler
 import (
 	dto "optitech/internal/dto"
 	cdto "optitech/internal/dto/client"
-	"optitech/internal/service"
+	"optitech/internal/interfaces"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetClientHandler(c *fiber.Ctx) error {
+type handler struct {
+	service interfaces.IClientService	
+}
+
+func NewHandlerClient(s interfaces.IClientService) interfaces.IClientHandler {
+	return &handler{
+		service: s,
+	}
+}
+
+func (h *handler) Get(c *fiber.Ctx) error {
 	params := c.AllParams()
 	req := &cdto.GetClientReq{}
 	if err := dto.ValidateParamsToDTO(params, req); err != nil {
@@ -19,7 +29,7 @@ func GetClientHandler(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	res, err := service.GetClientService(*req)
+	res, err := h.service.Get(req)
 
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
@@ -28,7 +38,7 @@ func GetClientHandler(c *fiber.Ctx) error {
 	return c.JSON(res)
 }
 
-func CreateClientHandler(c *fiber.Ctx) error {
+func (h *handler) Create(c *fiber.Ctx) error {
 	req := &cdto.CreateClientReq{}
 
 	err := c.BodyParser(req)
@@ -41,7 +51,7 @@ func CreateClientHandler(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	r, err := service.CreateClientService(*req)
+	r, err := h.service.Create(req)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}

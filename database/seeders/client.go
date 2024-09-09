@@ -3,13 +3,13 @@ package seeders
 import (
 	"context"
 	"log"
-	"optitech/internal/repository"
+	"owlbytech/internal/repository"
 	"time"
 
-	sq "optitech/internal/sqlc"
+	sq "owlbytech/internal/sqlc"
 )
 
-type ClientSeeder struct {}
+type ClientSeeder struct{}
 
 func (cs ClientSeeder) Up() error {
 	ctx := context.Background()

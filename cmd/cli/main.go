@@ -2,8 +2,9 @@ package main
 
 import (
 	"log"
-	"optitech/database"
 	"os"
+	"owlbytech/database"
+	cfg "owlbytech/internal/config"
 )
 
 var help = `Usage:
@@ -15,7 +16,8 @@ migrate         Run the migrations
 	  	down      Run the Down migrations files
 seed        Run the migrations
       up		  Run the Up seeders files
-	  	down      Run the Down seeders files`
+	  	down      Run the Down seeders files
+convert-mjml    Convert all MJML to HTML`
 
 func main() {
 
@@ -45,7 +47,11 @@ func main() {
 		if err != nil {
 			log.Fatalf("%v", err)
 		}
-
+	case "convert-mjml":
+		err := cfg.ConvertAllMailingTemplates()
+		if err != nil {
+			log.Fatalf("Error converting all MJML to HTML: %v", err)
+		}
 	default:
 		log.Fatal(help)
 	}

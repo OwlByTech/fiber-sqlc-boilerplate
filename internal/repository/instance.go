@@ -1,5 +1,5 @@
 package repository
 
-import sq "optitech/internal/sqlc"
+import sq "owlbytech/internal/sqlc"
 
 var Queries *sq.Queries

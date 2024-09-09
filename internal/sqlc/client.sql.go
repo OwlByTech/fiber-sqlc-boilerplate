@@ -67,7 +67,7 @@ func (q *Queries) DeleteClient(ctx context.Context, clientID int64) error {
 
 const getClient = `-- name: GetClient :one
 SELECT client_id, email, password, given_name, surname, created_at, updated_at, deleted_at FROM client
-WHERE client_id = $1 LIMIT 1
+WHERE client_id = $1
 `
 
 func (q *Queries) GetClient(ctx context.Context, clientID int64) (Client, error) {
@@ -87,26 +87,22 @@ func (q *Queries) GetClient(ctx context.Context, clientID int64) (Client, error)
 }
 
 const getClientByEmail = `-- name: GetClientByEmail :one
-SELECT email, password, given_name, surname
-FROM client
+SELECT client_id, email, password, given_name, surname, created_at, updated_at, deleted_at FROM client
 WHERE email = $1
 `
 
-type GetClientByEmailRow struct {
-	Email     string `json:"email"`
-	Password  string `json:"password"`
-	GivenName string `json:"given_name"`
-	Surname   string `json:"surname"`
-}
-
-func (q *Queries) GetClientByEmail(ctx context.Context, email string) (GetClientByEmailRow, error) {
+func (q *Queries) GetClientByEmail(ctx context.Context, email string) (Client, error) {
 	row := q.db.QueryRowContext(ctx, getClientByEmail, email)
-	var i GetClientByEmailRow
+	var i Client
 	err := row.Scan(
+		&i.ClientID,
 		&i.Email,
 		&i.Password,
 		&i.GivenName,
 		&i.Surname,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }

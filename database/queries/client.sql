@@ -1,14 +1,13 @@
 -- name: GetClient :one
 SELECT * FROM client
-WHERE client_id = $1 LIMIT 1;
+WHERE client_id = $1;
 
 -- name: ListClients :many
 SELECT * FROM client
 ORDER BY given_name;
 
 -- name: GetClientByEmail :one
-SELECT email, password, given_name, surname
-FROM client
+SELECT * FROM client
 WHERE email = $1;
 
 -- name: CreateClient :one

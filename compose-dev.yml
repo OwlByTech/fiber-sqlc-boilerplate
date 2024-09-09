@@ -42,7 +42,7 @@ services:
 
 networks:
   app:
-    name: optitech-api
+    name: owlbytech-api
     driver: bridge
     ipam:
       config:

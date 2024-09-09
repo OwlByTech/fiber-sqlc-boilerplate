@@ -3,9 +3,9 @@ package database
 import (
 	"fmt"
 	"log"
-	"optitech/database/seeders"
-	"optitech/internal/repository"
-	sq "optitech/internal/sqlc"
+	"owlbytech/database/seeders"
+	"owlbytech/internal/repository"
+	sq "owlbytech/internal/sqlc"
 )
 
 func Seeder(arg string) error {

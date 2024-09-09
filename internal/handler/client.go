@@ -1,32 +1,33 @@
 package handler
 
 import (
-	dto "optitech/internal/dto"
-	cdto "optitech/internal/dto/client"
-	"optitech/internal/interfaces"
+	dto "owlbytech/internal/dto"
+	cdto "owlbytech/internal/dto/client"
+	"owlbytech/internal/interfaces"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type handler struct {
-	service interfaces.IClientService	
+	service interfaces.IClientService
 }
 
-func NewHandlerClient(s interfaces.IClientService) interfaces.IClientHandler {
+func NewHandler(s interfaces.IClientService) interfaces.IClientHandler {
 	return &handler{
 		service: s,
 	}
 }
 
 func (h *handler) Get(c *fiber.Ctx) error {
-	params := c.AllParams()
-	req := &cdto.GetClientReq{}
-	if err := dto.ValidateParamsToDTO(params, req); err != nil {
-		// TODO: create a error handling structure for bad and good message with
-		// status, for example nestjs error handling in json form
-		// you should implement the previous as a midddleware for errors
-		// follow the next reference https://docs.gofiber.io/guide/error-handling/
-		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	data := c.Locals("clientId")
+	clientId, ok := data.(int64)
+
+	if !ok {
+		return fiber.NewError(fiber.StatusBadRequest, "Cannot casting client id")
+	}
+
+	req := &cdto.GetClientReq{
+		Id: clientId,
 	}
 
 	res, err := h.service.Get(req)
@@ -57,4 +58,73 @@ func (h *handler) Create(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(r)
+}
+
+func (h *handler) Login(c *fiber.Ctx) error {
+	req := &cdto.LoginClientReq{}
+
+	if err := c.BodyParser(req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid input: "+err.Error())
+	}
+
+	if err := dto.ValidateDTO(req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	res, err := h.service.Login(req)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(res)
+
+}
+
+func (h *handler) ResetPassword(c *fiber.Ctx) error {
+	req := &cdto.ResetPasswordReq{}
+
+	if err := c.BodyParser(req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid input: "+err.Error())
+	}
+
+	if err := dto.ValidateDTO(req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	res, err := h.service.ResetPassword(*req)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(res)
+}
+func (h *handler) ResetPasswordToken(c *fiber.Ctx) error {
+	req := &cdto.ResetPasswordTokenReq{}
+
+	if err := c.BodyParser(req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid input: "+err.Error())
+	}
+
+	if err := dto.ValidateDTO(req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	res, err := h.service.ResetPasswordToken(req)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(res)
+}
+func (h *handler) ValidateResetPasswordToken(c *fiber.Ctx) error {
+	token := c.Query("token")
+	req := &cdto.ValidateResetPasswordTokenReq{
+		Token: token,
+	}
+	res, err := h.service.ValidateResetPasswordToken(*req)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(res)
 }

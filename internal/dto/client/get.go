@@ -9,4 +9,5 @@ type GetClientRes struct {
 	Email     string
 	GivenName string
 	Surname   string
+	Password  string
 }

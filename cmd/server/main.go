@@ -5,13 +5,19 @@ import (
 	"os"
 	"strconv"
 
-	"optitech/database"
-	"optitech/internal/repository"
-	"optitech/internal/router"
-	sq "optitech/internal/sqlc"
+	"owlbytech/database"
+	"owlbytech/internal/config"
+	"owlbytech/internal/repository"
+	"owlbytech/internal/router"
+	sq "owlbytech/internal/sqlc"
 )
 
 func main() {
+	err := config.LoadConfig()
+	if err != nil {
+		log.Fatalf("could not load config: %v", err)
+	}
+
 	db, err := database.Connect()
 	if err != nil {
 		log.Fatalf("%v", err)
